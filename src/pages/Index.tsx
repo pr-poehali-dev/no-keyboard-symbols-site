@@ -18,6 +18,7 @@ const Index = () => {
     const saved = localStorage.getItem("copyCounts");
     return saved ? JSON.parse(saved) : {};
   });
+  const [sortBy, setSortBy] = useState<"default" | "popular">("default");
 
   const filteredSymbols = useMemo(() => {
     let filtered = symbolsData;
@@ -40,8 +41,16 @@ const Index = () => {
       );
     }
 
+    if (sortBy === "popular") {
+      filtered = [...filtered].sort((a, b) => {
+        const countA = copyCounts[a.symbol] || 0;
+        const countB = copyCounts[b.symbol] || 0;
+        return countB - countA;
+      });
+    }
+
     return filtered;
-  }, [searchQuery, selectedCategory, favorites, showFavoritesOnly]);
+  }, [searchQuery, selectedCategory, favorites, showFavoritesOnly, sortBy, copyCounts]);
 
   const toggleFavorite = (symbol: string) => {
     const newFavorites = new Set(favorites);
@@ -102,6 +111,15 @@ const Index = () => {
             >
               <Icon name="Star" size={16} className={showFavoritesOnly ? "fill-current mr-2" : "mr-2"} />
               Избранное ({favorites.size})
+            </Button>
+
+            <Button
+              variant={sortBy === "popular" ? "default" : "outline"}
+              onClick={() => setSortBy(sortBy === "popular" ? "default" : "popular")}
+              className="whitespace-nowrap"
+            >
+              <Icon name="TrendingUp" size={16} className="mr-2" />
+              Популярные
             </Button>
 
             <div className="h-6 w-px bg-border" />
