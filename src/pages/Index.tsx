@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { SymbolCard } from "@/components/SymbolCard";
 import { symbolsData, categories } from "@/data/symbols";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import Icon from "@/components/ui/icon";
 
 const Index = () => {
@@ -52,7 +53,10 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <header className="text-center mb-12">
+        <header className="text-center mb-12 relative">
+          <div className="absolute right-0 top-0">
+            <ThemeToggle />
+          </div>
           <h1 className="text-5xl font-bold text-foreground mb-3">
             Специальные символы
           </h1>
