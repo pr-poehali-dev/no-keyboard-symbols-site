@@ -14,6 +14,10 @@ const Index = () => {
     return saved ? new Set(JSON.parse(saved)) : new Set();
   });
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [copyCounts, setCopyCounts] = useState<Record<string, number>>(() => {
+    const saved = localStorage.getItem("copyCounts");
+    return saved ? JSON.parse(saved) : {};
+  });
 
   const filteredSymbols = useMemo(() => {
     let filtered = symbolsData;
@@ -48,6 +52,15 @@ const Index = () => {
     }
     setFavorites(newFavorites);
     localStorage.setItem("favorites", JSON.stringify(Array.from(newFavorites)));
+  };
+
+  const handleCopy = (symbol: string) => {
+    const newCounts = {
+      ...copyCounts,
+      [symbol]: (copyCounts[symbol] || 0) + 1
+    };
+    setCopyCounts(newCounts);
+    localStorage.setItem("copyCounts", JSON.stringify(newCounts));
   };
 
   return (
@@ -124,6 +137,8 @@ const Index = () => {
                 code={item.code}
                 isFavorite={favorites.has(item.symbol)}
                 onToggleFavorite={() => toggleFavorite(item.symbol)}
+                copyCount={copyCounts[item.symbol] || 0}
+                onCopy={() => handleCopy(item.symbol)}
               />
             ))}
           </div>

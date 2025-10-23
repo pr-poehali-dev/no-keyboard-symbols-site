@@ -9,6 +9,8 @@ interface SymbolCardProps {
   code: string;
   isFavorite?: boolean;
   onToggleFavorite?: () => void;
+  copyCount?: number;
+  onCopy?: () => void;
 }
 
 export const SymbolCard = ({ 
@@ -16,11 +18,14 @@ export const SymbolCard = ({
   name, 
   code, 
   isFavorite = false, 
-  onToggleFavorite 
+  onToggleFavorite,
+  copyCount = 0,
+  onCopy
 }: SymbolCardProps) => {
   const copyToClipboard = () => {
     navigator.clipboard.writeText(symbol);
     toast.success(`${symbol} скопирован!`);
+    onCopy?.();
   };
 
   return (
@@ -33,6 +38,12 @@ export const SymbolCard = ({
         <div className="text-center">
           <p className="font-medium text-sm text-foreground">{name}</p>
           <p className="text-xs text-muted-foreground mt-1">{code}</p>
+          {copyCount > 0 && (
+            <div className="flex items-center justify-center gap-1 mt-2">
+              <Icon name="Copy" size={12} className="text-muted-foreground" />
+              <span className="text-xs text-muted-foreground">{copyCount}</span>
+            </div>
+          )}
         </div>
 
         <div className="flex gap-2 mt-2">
