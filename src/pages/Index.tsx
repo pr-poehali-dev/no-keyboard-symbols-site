@@ -1,9 +1,10 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { SymbolCard } from "@/components/SymbolCard";
 import { symbolsData, categories } from "@/data/symbols";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { HotkeysInfo } from "@/components/HotkeysInfo";
 import { toast } from "sonner";
 import Icon from "@/components/ui/icon";
 
@@ -20,6 +21,7 @@ const Index = () => {
     return saved ? JSON.parse(saved) : {};
   });
   const [sortBy, setSortBy] = useState<"default" | "popular">("default");
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const filteredSymbols = useMemo(() => {
     let filtered = symbolsData;
@@ -73,6 +75,51 @@ const Index = () => {
     localStorage.setItem("copyCounts", JSON.stringify(newCounts));
   };
 
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+
+      if (e.key === '/') {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+        return;
+      }
+
+      if (e.key === 'Escape') {
+        setSearchQuery("");
+        searchInputRef.current?.blur();
+        return;
+      }
+
+      if (e.key.toLowerCase() === 'f') {
+        e.preventDefault();
+        setShowFavoritesOnly(!showFavoritesOnly);
+        return;
+      }
+
+      if (e.key.toLowerCase() === 'p') {
+        e.preventDefault();
+        setSortBy(sortBy === "popular" ? "default" : "popular");
+        return;
+      }
+
+      const num = parseInt(e.key);
+      if (!isNaN(num) && num >= 1 && num <= 9) {
+        const symbol = filteredSymbols[num - 1];
+        if (symbol) {
+          navigator.clipboard.writeText(symbol.symbol);
+          toast.success(`${symbol.symbol} скопирован!`);
+          handleCopy(symbol.symbol);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [filteredSymbols, showFavoritesOnly, sortBy]);
+
   const exportFavorites = () => {
     const favoriteSymbols = symbolsData.filter(s => favorites.has(s.symbol));
     
@@ -104,7 +151,8 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <header className="text-center mb-12 relative">
-          <div className="absolute right-0 top-0">
+          <div className="absolute right-0 top-0 flex gap-2">
+            <HotkeysInfo />
             <ThemeToggle />
           </div>
           <h1 className="text-5xl font-bold text-foreground mb-3">
@@ -123,8 +171,9 @@ const Index = () => {
               className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
             />
             <Input
+              ref={searchInputRef}
               type="text"
-              placeholder="Поиск по символам, названиям или кодам..."
+              placeholder="Поиск по символам, названиям или кодам... (нажмите /)"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 h-12 text-base border-2 focus:border-primary"
