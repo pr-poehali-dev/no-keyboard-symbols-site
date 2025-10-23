@@ -5,6 +5,7 @@ import { symbolsData, categories } from "@/data/symbols";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { HotkeysInfo } from "@/components/HotkeysInfo";
+import { RecentHistory } from "@/components/RecentHistory";
 import { toast } from "sonner";
 import Icon from "@/components/ui/icon";
 
@@ -22,6 +23,10 @@ const Index = () => {
   });
   const [sortBy, setSortBy] = useState<"default" | "popular">("default");
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const [history, setHistory] = useState<Array<{ symbol: string; name: string; timestamp: number }>>(() => {
+    const saved = localStorage.getItem("copyHistory");
+    return saved ? JSON.parse(saved) : [];
+  });
 
   const filteredSymbols = useMemo(() => {
     let filtered = symbolsData;
@@ -73,6 +78,22 @@ const Index = () => {
     };
     setCopyCounts(newCounts);
     localStorage.setItem("copyCounts", JSON.stringify(newCounts));
+
+    const symbolData = symbolsData.find(s => s.symbol === symbol);
+    if (symbolData) {
+      const newHistory = [
+        { symbol: symbolData.symbol, name: symbolData.name, timestamp: Date.now() },
+        ...history.filter(h => h.symbol !== symbol)
+      ].slice(0, 20);
+      setHistory(newHistory);
+      localStorage.setItem("copyHistory", JSON.stringify(newHistory));
+    }
+  };
+
+  const clearHistory = () => {
+    setHistory([]);
+    localStorage.removeItem("copyHistory");
+    toast.success("История очищена");
   };
 
   useEffect(() => {
@@ -152,6 +173,7 @@ const Index = () => {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <header className="text-center mb-12 relative">
           <div className="absolute right-0 top-0 flex gap-2">
+            <RecentHistory history={history} onClear={clearHistory} />
             <HotkeysInfo />
             <ThemeToggle />
           </div>
