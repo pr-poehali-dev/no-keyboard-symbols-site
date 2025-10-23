@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { HotkeysInfo } from "@/components/HotkeysInfo";
 import { RecentHistory } from "@/components/RecentHistory";
+import { Collections, Collection } from "@/components/Collections";
 import { toast } from "sonner";
 import Icon from "@/components/ui/icon";
 
@@ -25,6 +26,10 @@ const Index = () => {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [history, setHistory] = useState<Array<{ symbol: string; name: string; timestamp: number }>>(() => {
     const saved = localStorage.getItem("copyHistory");
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [collections, setCollections] = useState<Collection[]>(() => {
+    const saved = localStorage.getItem("collections");
     return saved ? JSON.parse(saved) : [];
   });
 
@@ -94,6 +99,44 @@ const Index = () => {
     setHistory([]);
     localStorage.removeItem("copyHistory");
     toast.success("История очищена");
+  };
+
+  const addCollection = (name: string) => {
+    const newCollection: Collection = {
+      id: Date.now().toString(),
+      name,
+      symbols: [],
+      createdAt: Date.now()
+    };
+    const updated = [...collections, newCollection];
+    setCollections(updated);
+    localStorage.setItem("collections", JSON.stringify(updated));
+  };
+
+  const deleteCollection = (id: string) => {
+    const updated = collections.filter(c => c.id !== id);
+    setCollections(updated);
+    localStorage.setItem("collections", JSON.stringify(updated));
+  };
+
+  const addToCollection = (collectionId: string, symbol: string) => {
+    const updated = collections.map(c => 
+      c.id === collectionId && !c.symbols.includes(symbol)
+        ? { ...c, symbols: [...c.symbols, symbol] }
+        : c
+    );
+    setCollections(updated);
+    localStorage.setItem("collections", JSON.stringify(updated));
+  };
+
+  const removeFromCollection = (collectionId: string, symbol: string) => {
+    const updated = collections.map(c => 
+      c.id === collectionId
+        ? { ...c, symbols: c.symbols.filter(s => s !== symbol) }
+        : c
+    );
+    setCollections(updated);
+    localStorage.setItem("collections", JSON.stringify(updated));
   };
 
   useEffect(() => {
@@ -173,6 +216,13 @@ const Index = () => {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <header className="text-center mb-12 relative">
           <div className="absolute right-0 top-0 flex gap-2">
+            <Collections
+              collections={collections}
+              onAddCollection={addCollection}
+              onDeleteCollection={deleteCollection}
+              onAddToCollection={addToCollection}
+              onRemoveFromCollection={removeFromCollection}
+            />
             <RecentHistory history={history} onClear={clearHistory} />
             <HotkeysInfo />
             <ThemeToggle />
