@@ -4,6 +4,7 @@ import { SymbolCard } from "@/components/SymbolCard";
 import { symbolsData, categories } from "@/data/symbols";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { toast } from "sonner";
 import Icon from "@/components/ui/icon";
 
 const Index = () => {
@@ -72,6 +73,33 @@ const Index = () => {
     localStorage.setItem("copyCounts", JSON.stringify(newCounts));
   };
 
+  const exportFavorites = () => {
+    const favoriteSymbols = symbolsData.filter(s => favorites.has(s.symbol));
+    
+    if (favoriteSymbols.length === 0) {
+      toast.error("У вас нет избранных символов");
+      return;
+    }
+
+    let content = "Избранные символы\n\n";
+    
+    favoriteSymbols.forEach(item => {
+      content += `${item.symbol} - ${item.name} (${item.code})\n`;
+    });
+
+    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "favorite-symbols.txt";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    toast.success(`Экспортировано ${favoriteSymbols.length} символов`);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 py-8">
@@ -112,6 +140,17 @@ const Index = () => {
               <Icon name="Star" size={16} className={showFavoritesOnly ? "fill-current mr-2" : "mr-2"} />
               Избранное ({favorites.size})
             </Button>
+
+            {favorites.size > 0 && (
+              <Button
+                variant="outline"
+                onClick={exportFavorites}
+                className="whitespace-nowrap"
+              >
+                <Icon name="Download" size={16} className="mr-2" />
+                Экспорт
+              </Button>
+            )}
 
             <Button
               variant={sortBy === "popular" ? "default" : "outline"}
