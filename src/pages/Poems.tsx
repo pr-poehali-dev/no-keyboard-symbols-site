@@ -2,30 +2,15 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import Icon from "@/components/ui/icon";
-import { useState, useRef } from "react";
+import { useState } from "react";
 
 const Poems = () => {
   const [selectedPoem, setSelectedPoem] = useState<number | null>(null);
-  const [playingPoem, setPlayingPoem] = useState<number | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  const handlePlayPause = (index: number) => {
-    if (playingPoem === index) {
-      audioRef.current?.pause();
-      setPlayingPoem(null);
-    } else {
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
-      setPlayingPoem(index);
-    }
-  };
 
   const poems = [
     {
       title: "Зимнее утро",
       year: "1829",
-      audioUrl: "https://russianliterature.org/audio/pushkin/winter-morning.mp3",
       text: [
         "Мороз и солнце; день чудесный!",
         "Еще ты дремлешь, друг прелестный —",
@@ -52,7 +37,6 @@ const Poems = () => {
     {
       title: "Я помню чудное мгновенье",
       year: "1825",
-      audioUrl: "https://russianliterature.org/audio/pushkin/wonderful-moment.mp3",
       text: [
         "Я помню чудное мгновенье:",
         "Передо мной явилась ты,",
@@ -73,7 +57,6 @@ const Poems = () => {
     {
       title: "К Чаадаеву",
       year: "1818",
-      audioUrl: "https://russianliterature.org/audio/pushkin/to-chaadaev.mp3",
       text: [
         "Любви, надежды, тихой славы",
         "Недолго нежил нас обман,",
@@ -97,7 +80,6 @@ const Poems = () => {
     {
       title: "Узник",
       year: "1822",
-      audioUrl: "https://russianliterature.org/audio/pushkin/prisoner.mp3",
       text: [
         "Сижу за решеткой в темнице сырой.",
         "Вскормленный в неволе орел молодой,",
@@ -118,7 +100,6 @@ const Poems = () => {
     {
       title: "Песнь о вещем Олеге",
       year: "1822",
-      audioUrl: "https://russianliterature.org/audio/pushkin/prophetic-oleg.mp3",
       text: [
         "Как ныне сбирается вещий Олег",
         "Отмстить неразумным хазарам,",
@@ -138,7 +119,6 @@ const Poems = () => {
     {
       title: "Во глубине сибирских руд",
       year: "1827",
-      audioUrl: "https://russianliterature.org/audio/pushkin/siberian-mines.mp3",
       text: [
         "Во глубине сибирских руд",
         "Храните гордое терпенье,",
@@ -185,41 +165,24 @@ const Poems = () => {
               key={index}
               className="overflow-hidden border-2 border-amber-100 hover:border-amber-300 transition-all bg-white"
             >
-              <div className="p-5 sm:p-6">
-                <div className="flex items-start justify-between gap-4 mb-4">
+              <button
+                onClick={() => setSelectedPoem(selectedPoem === index ? null : index)}
+                className="w-full p-5 sm:p-6 text-left hover:bg-amber-50/50 transition-colors"
+              >
+                <div className="flex items-center justify-between gap-4">
                   <div className="flex-1">
                     <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1 sm:mb-2 font-serif">
                       {poem.title}
                     </h3>
                     <p className="text-xs sm:text-sm text-gray-500">{poem.year}</p>
                   </div>
-                  <button
-                    onClick={() => setSelectedPoem(selectedPoem === index ? null : index)}
-                    className="p-2 hover:bg-amber-100 rounded-full transition-colors"
-                  >
-                    <Icon
-                      name={selectedPoem === index ? "ChevronUp" : "ChevronDown"}
-                      size={24}
-                      className="text-amber-600"
-                    />
-                  </button>
+                  <Icon
+                    name={selectedPoem === index ? "ChevronUp" : "ChevronDown"}
+                    size={24}
+                    className="text-amber-600 flex-shrink-0"
+                  />
                 </div>
-                
-                <div className="flex gap-2">
-                  <Button
-                    onClick={() => handlePlayPause(index)}
-                    variant="outline"
-                    size="sm"
-                    className="gap-2"
-                  >
-                    <Icon 
-                      name={playingPoem === index ? "Pause" : "Play"} 
-                      size={16}
-                    />
-                    {playingPoem === index ? "Пауза" : "Слушать"}
-                  </Button>
-                </div>
-              </div>
+              </button>
 
               {selectedPoem === index && (
                 <div className="px-5 sm:px-6 pb-5 sm:pb-6">
@@ -233,16 +196,6 @@ const Poems = () => {
                     </div>
                   </div>
                 </div>
-              )}
-              
-              {playingPoem === index && (
-                <audio
-                  ref={audioRef}
-                  src={poem.audioUrl}
-                  autoPlay
-                  onEnded={() => setPlayingPoem(null)}
-                  className="hidden"
-                />
               )}
             </Card>
           ))}
