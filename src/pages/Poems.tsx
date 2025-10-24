@@ -25,7 +25,7 @@ const Poems = () => {
     {
       title: "Зимнее утро",
       year: "1829",
-      audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+      audioUrl: "https://russianliterature.org/audio/pushkin/winter-morning.mp3",
       text: [
         "Мороз и солнце; день чудесный!",
         "Еще ты дремлешь, друг прелестный —",
@@ -52,7 +52,7 @@ const Poems = () => {
     {
       title: "Я помню чудное мгновенье",
       year: "1825",
-      audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+      audioUrl: "https://russianliterature.org/audio/pushkin/wonderful-moment.mp3",
       text: [
         "Я помню чудное мгновенье:",
         "Передо мной явилась ты,",
@@ -73,7 +73,7 @@ const Poems = () => {
     {
       title: "К Чаадаеву",
       year: "1818",
-      audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+      audioUrl: "https://russianliterature.org/audio/pushkin/to-chaadaev.mp3",
       text: [
         "Любви, надежды, тихой славы",
         "Недолго нежил нас обман,",
@@ -97,7 +97,7 @@ const Poems = () => {
     {
       title: "Узник",
       year: "1822",
-      audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
+      audioUrl: "https://russianliterature.org/audio/pushkin/prisoner.mp3",
       text: [
         "Сижу за решеткой в темнице сырой.",
         "Вскормленный в неволе орел молодой,",
@@ -118,7 +118,7 @@ const Poems = () => {
     {
       title: "Песнь о вещем Олеге",
       year: "1822",
-      audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",
+      audioUrl: "https://russianliterature.org/audio/pushkin/prophetic-oleg.mp3",
       text: [
         "Как ныне сбирается вещий Олег",
         "Отмстить неразумным хазарам,",
@@ -138,7 +138,7 @@ const Poems = () => {
     {
       title: "Во глубине сибирских руд",
       year: "1827",
-      audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3",
+      audioUrl: "https://russianliterature.org/audio/pushkin/siberian-mines.mp3",
       text: [
         "Во глубине сибирских руд",
         "Храните гордое терпенье,",
