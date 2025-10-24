@@ -186,12 +186,18 @@ const Works = () => {
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4 font-serif">
             Наследие Пушкина
           </h2>
-          <p className="text-sm sm:text-base text-gray-700 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base text-gray-700 max-w-2xl mx-auto leading-relaxed mb-6">
             Александр Сергеевич Пушкин создал более 800 лирических стихотворений, 
             12 поэм, драматические произведения, повести и роман в стихах. 
             Его творчество стало основой русской классической литературы и 
             продолжает вдохновлять читателей по всему миру.
           </p>
+          <Link to="/poems">
+            <Button size="lg" className="bg-gradient-to-r from-amber-600 to-orange-700 hover:from-amber-700 hover:to-orange-800 text-white">
+              <Icon name="BookText" size={18} className="mr-2" />
+              Читать стихотворения
+            </Button>
+          </Link>
         </div>
       </div>
     </div>
